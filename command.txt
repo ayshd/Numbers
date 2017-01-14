@@ -1,3 +1,5 @@
+git config --global user.name
+git config --global user.email
 git fetch
 git merge origin/master
 git add command.txt getWinNum.py hoge.txt readWinNum.c
