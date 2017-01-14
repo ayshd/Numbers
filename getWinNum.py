@@ -6,9 +6,11 @@ import os
 import numpy as np
 
 ##################################################
-# function define
+# みずほ銀行HPから（B表）A表以前の当せん番号を取得
+# Last Accessed: 2017/01/14
+# 第1回～第4308回
 ##################################################
-def getWinNum():
+def tableB():
     url = 'https://www.mizuhobank.co.jp/takarakuji/numbers/backnumber/num'
     num = 1;
     fp_out = open('win_num.csv', 'w')
@@ -28,12 +30,12 @@ def getWinNum():
         fp = open('html.txt', 'r')
         for row in fp:
             if '<th class="bgf7f7f7">' in row:
-                tmp = [row[i: i+21] for i in range(0, len(row), 21)]
+                tmp = row.split('>')
                 tmp2 = tmp[1].split('<')
                 fp_out.write(tmp2[0])
                 ct = 0
             elif '<td class="alnRight">'in row:
-                tmp = [row[i: i+21] for i in range(0, len(row), 21)]
+                tmp = row.split('>')
                 tmp2 = tmp[1].split('<')
                 fp_out.write(','+tmp2[0])
                 ct += 1
@@ -43,17 +45,29 @@ def getWinNum():
         num += 20
         fp.close()
     fp_out.close()
-#########################
-def getWinNum_n3_last12months():
-    url = 'https://www.mizuhobank.co.jp/takarakuji/numbers/backnumber/num3-2016'
-    fp_out = open('win_num_n3_last12month.csv', 'w')
+##################################################
+
+
+##################################################
+# みずほ銀行HPから（A表）先月から過去1年間の当せん番号を取得
+# Last Accessed: 2017/01/14
+# 第4309回～第4568回
+##################################################
+def tableA():
+    #ナンバーズ3
+    list_n3 = list()
+    url_n3 = 'https://www.mizuhobank.co.jp/takarakuji/numbers/backnumber/num3-2016'
+    #ナンバーズ4
+    list_n4 = list()
+    url_n4 = 'https://www.mizuhobank.co.jp/takarakuji/numbers/backnumber/num4-2016'
+
+    fp_out = open('win_num.csv', 'a')
+
     num = 12;
-    tmp_list = list()
     tmp_string = 0
     ct = 0
-
     while num >= 1:
-        tmp_url = url + str(num).zfill(2) + '.html'
+        tmp_url = url_n3 + str(num).zfill(2) + '.html'
         print tmp_url
 
         fp = urllib2.urlopen(tmp_url)
@@ -82,71 +96,15 @@ def getWinNum_n3_last12months():
                 tmp_string = tmp_string + tmp2[0]
                 ct += 1
             if ct == 2:
-                tmp_list.append(tmp_string)
+                list_n3.append(tmp_string)
                 ct = 0
         num -= 1
         fp.close()
 
-    for item in reversed(tmp_list):
-        fp_out.write(item)
-        fp_out.write('\n')
-    fp_out.close()
-#########################
-def getWinNum_n3_latest():
-    url = 'https://www.mizuhobank.co.jp/takarakuji/numbers/numbers3/index.html'
-    fp_out = open('win_num_n3_latest.csv', 'w')
-    tmp_list = list()
-    tmp_string = 0
-    ct = 0
-
-    print url
-
-    fp = urllib2.urlopen(url)
-    html = fp.read()
-    fp.close()
-
-    fp = open('html.txt', 'w')
-    fp.write(html)
-    fp.close()
-
-    fp = open('html.txt', 'r')
-    ct = 0
-    for row in fp:
-        if '<th colspan="4" class="alnCenter bgf7f7f7">' in row:
-            tmp = row.split('>')
-            tmp2 = tmp[1].split('<')
-            tmp_string = tmp2[0] + ','
-            ct = 0
-        elif '<td colspan="4" class="alnCenter">'in row:
-            tmp = row.split('>')
-            tmp2 = tmp[1].split('<')
-            tmp_string = tmp_string + tmp2[0] + ','
-            ct += 1
-        elif '<td colspan="4" class="alnCenter extension"><strong>' in row:
-            tmp = row.split('>')
-            tmp2 = tmp[2].split('<')
-            tmp_string = tmp_string + tmp2[0]
-            ct += 1
-        if ct == 2:
-            tmp_list.append(tmp_string)
-            ct = 0
-    fp.close()
-
-    for item in reversed(tmp_list):
-        fp_out.write(item)
-        fp_out.write('\n')
-    fp_out.close()
-#########################
-def getWinNum_n4_last12months():
-    url = 'https://www.mizuhobank.co.jp/takarakuji/numbers/backnumber/num4-2016'
-    fp_out = open('win_num_n4_last12month.csv', 'w')
     num = 12;
-    tmp_list = list()
-    tmp_string = 0
     ct = 0
-
     while num >= 1:
-        tmp_url = url + str(num).zfill(2) + '.html'
+        tmp_url = url_n4 + str(num).zfill(2) + '.html'
         print tmp_url
 
         fp = urllib2.urlopen(tmp_url)
@@ -176,25 +134,44 @@ def getWinNum_n4_last12months():
                 tmp_string = tmp_string + tmp2[0]
                 ct += 1
             if ct == 2:
-                tmp_list.append(tmp_string)
+                list_n4.append(tmp_string)
                 ct = 0
         num -= 1
         fp.close()
 
-    for item in reversed(tmp_list):
-        fp_out.write(item)
-        fp_out.write('\n')
+    for item_n3 in reversed(list_n3):
+        tmp_n3 = item_n3.replace('\n','').split(',')
+        for item_n4 in reversed(list_n4):
+            tmp_n4 = item_n4.split(',')
+            if tmp_n3[0]==tmp_n4[0] and tmp_n3[1]==tmp_n4[1]:
+                tmp = item_n3.replace('\n','') + ',' + tmp_n4[2]
+                #print tmp
+                fp_out.write(tmp)
+                fp_out.write('\n')
     fp_out.close()
-#########################
-def getWinNum_n4_latest():
-    url = 'https://www.mizuhobank.co.jp/takarakuji/numbers/numbers4/index.html'
-    fp_out = open('win_num_n4_latest.csv', 'w')
-    tmp_list = list()
-    tmp_string = 0
-    ct = 0
-    print url
+##################################################
 
-    fp = urllib2.urlopen(url)
+
+
+##################################################
+# みずほ銀行HPからナンバーズの当せん番号を取得
+# Last Accessed: 2017/01/14
+# 第4569回～第4576回
+##################################################
+def latest():
+    #ナンバーズ3
+    list_n3 = list()
+    url_n3 = 'https://www.mizuhobank.co.jp/takarakuji/numbers/numbers3/index.html'
+    #ナンバーズ4
+    list_n4 = list()
+    url_n4 = 'https://www.mizuhobank.co.jp/takarakuji/numbers/numbers4/index.html'
+
+    fp_out = open('win_num_.csv', 'a')
+
+    tmp_string = 0
+
+    print url_n3
+    fp = urllib2.urlopen(url_n3)
     html = fp.read()
     fp.close()
 
@@ -221,71 +198,50 @@ def getWinNum_n4_latest():
             tmp_string = tmp_string + tmp2[0]
             ct += 1
         if ct == 2:
-            tmp_list.append(tmp_string)
+            list_n3.append(tmp_string)
             ct = 0
     fp.close()
 
-    for item in reversed(tmp_list):
-        fp_out.write(item)
-        fp_out.write('\n')
+    print url_n4
+    fp = urllib2.urlopen(url_n4)
+    html = fp.read()
+    fp.close()
+
+    fp = open('html.txt', 'w')
+    fp.write(html)
+    fp.close()
+
+    fp = open('html.txt', 'r')
+    ct = 0
+    for row in fp:
+        if '<th colspan="4" class="alnCenter bgf7f7f7">' in row:
+            tmp = row.split('>')
+            tmp2 = tmp[1].split('<')
+            tmp_string = tmp2[0] + ','
+            ct = 0
+        elif '<td colspan="4" class="alnCenter">'in row:
+            tmp = row.split('>')
+            tmp2 = tmp[1].split('<')
+            tmp_string = tmp_string + tmp2[0] + ','
+            ct += 1
+        elif '<td colspan="4" class="alnCenter extension"><strong>' in row:
+            tmp = row.split('>')
+            tmp2 = tmp[2].split('<')
+            tmp_string = tmp_string + tmp2[0]
+            ct += 1
+        if ct == 2:
+            list_n4.append(tmp_string)
+            ct = 0
+    fp.close()
+
+    for item_n3 in reversed(list_n3):
+        tmp_n3 = item_n3.replace('\n','').split(',')
+        for item_n4 in reversed(list_n4):
+            tmp_n4 = item_n4.split(',')
+            if tmp_n3[0]==tmp_n4[0] and tmp_n3[1]==tmp_n4[1]:
+                tmp = item_n3.replace('\n','') + ',' + tmp_n4[2]
+                #print tmp
+                fp_out.write(tmp)
+                fp_out.write('\n')
     fp_out.close()
-#########################
-def combine_latest():
-    list_n3 = list()
-    list_n4 = list()
-    fp = open('win_num_latest.csv', 'w')
-
-    fp_n3 = open('win_num_n3_latest.csv', 'r')
-    for row in fp_n3:
-        list_n3.append(row)
-
-    fp_n4 = open('win_num_n4_latest.csv', 'r')
-    for row in fp_n4:
-        list_n4.append(row)
-
-    for n3_item in list_n3:
-        n3_tmp = n3_item.replace('\n','').split(',')
-        for n4_item in list_n4:
-            n4_tmp = n4_item.split(',')
-            if n3_tmp[0]==n4_tmp[0] and n3_tmp[1]==n4_tmp[1]:
-                tmp = n3_item.replace('\n','') + ',' + n4_tmp[2]
-                #print tmp
-                fp.write(tmp)
-    fp.close()
-#########################
-def combine_last12month():
-    list_n3 = list()
-    list_n4 = list()
-    fp = open('win_num_last12month.csv', 'w')
-
-    fp_n3 = open('win_num_n3_last12month.csv', 'r')
-    for row in fp_n3:
-        list_n3.append(row)
-
-    fp_n4 = open('win_num_n4_last12month.csv', 'r')
-    for row in fp_n4:
-        list_n4.append(row)
-
-    for n3_item in list_n3:
-        n3_tmp = n3_item.replace('\n','').split(',')
-        for n4_item in list_n4:
-            n4_tmp = n4_item.split(',')
-            if n3_tmp[0]==n4_tmp[0] and n3_tmp[1]==n4_tmp[1]:
-                tmp = n3_item.replace('\n','') + ',' + n4_tmp[2]
-                #print tmp
-                fp.write(tmp)
-    fp.close()
 ##################################################
-#getWinNum()
-
-getWinNum_n3_last12months()
-getWinNum_n3_latest()
-getWinNum_n4_last12months()
-getWinNum_n4_latest()
-combine_latest()
-combine_last12month()
-
-os.system('echo 回別,抽せん日,ナンバーズ3,ナンバーズ4 > tmp.csv')
-os.system('cat win_num.csv >> tmp.csv')
-os.system('cat win_num_last12month.csv >> tmp.csv')
-os.system('cat win_num_latest.csv >> tmp.csv')
