@@ -1,7 +1,13 @@
 git config --global user.name
 git config --global user.email
+git config -l
 git fetch
 git merge origin/master
 git add command.txt getWinNum.py hoge.txt readWinNum.c
 git commit
 git push origin master
+
+repository が private の場合は、
+# git clone  --progress -v https://user_name@github.com/user_name/repository_name.git"
+repository が public の場合は、
+# git clone  --progress -v  https://github.com/ user_name/repository_name.git
