@@ -7,5 +7,5 @@ getWinNum.py: 当選結果をcsvファイルに出力
 
 countWinNum.c: csvファイルを読み込み，各桁の数字の出現回数と，最頻値を出力
 
-*gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-11)
-*Python 2.7.5
+gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-11)  
+Python 2.7.5
