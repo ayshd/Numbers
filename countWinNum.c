@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define START 4430
+#define START 0
 #define END 4580
 char *fname = "win_num.csv";
 
