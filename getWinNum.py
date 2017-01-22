@@ -4,16 +4,19 @@ import urllib2
 import codecs
 import os
 import numpy as np
+import csv
+
+fname = 'win_num.csv'
 
 ##################################################
 # みずほ銀行HPから（B表）A表以前の当せん番号を取得
-# Last Accessed: 2017/01/14
+# Accessed: 2017/01/14
 # 第1回～第4308回
 ##################################################
 def tableB():
     url = 'https://www.mizuhobank.co.jp/takarakuji/numbers/backnumber/num'
     num = 1;
-    fp_out = open('win_num.csv', 'w')
+    fp_out = open(fname, 'w')
 
     while num <= 4301:
         tmp_url = url + str(num).zfill(4) + '.html'
@@ -45,12 +48,13 @@ def tableB():
         num += 20
         fp.close()
     fp_out.close()
+    os.system('rm html.txt')
 ##################################################
 
 
 ##################################################
 # みずほ銀行HPから（A表）先月から過去1年間の当せん番号を取得
-# Last Accessed: 2017/01/14
+# Accessed: 2017/01/14
 # 第4309回～第4568回
 ##################################################
 def tableA():
@@ -61,7 +65,7 @@ def tableA():
     list_n4 = list()
     url_n4 = 'https://www.mizuhobank.co.jp/takarakuji/numbers/backnumber/num4-2016'
 
-    fp_out = open('win_num.csv', 'a')
+    fp_out = open(fname, 'a')
 
     num = 12;
     tmp_string = 0
@@ -149,13 +153,14 @@ def tableA():
                 fp_out.write(tmp)
                 fp_out.write('\n')
     fp_out.close()
+    os.system('rm html.txt')
 ##################################################
 
 
 
 ##################################################
 # みずほ銀行HPからナンバーズの当せん番号を取得
-# Last Accessed: 2017/01/14
+# Accessed: 2017/01/14
 # 第4569回～第4576回
 ##################################################
 def latest():
@@ -166,7 +171,7 @@ def latest():
     list_n4 = list()
     url_n4 = 'https://www.mizuhobank.co.jp/takarakuji/numbers/numbers4/index.html'
 
-    fp_out = open('win_num_.csv', 'a')
+    fp_out = open(fname, 'a')
 
     tmp_string = 0
 
@@ -244,4 +249,9 @@ def latest():
                 fp_out.write(tmp)
                 fp_out.write('\n')
     fp_out.close()
+    os.system('rm html.txt')
 ##################################################
+
+tableB() # 第1回～第4308回
+tableA() # 第4309回～第4568回
+latest() # 第4569回～第4576回
