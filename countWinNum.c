@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define START 4529
-#define END 4579
+#define START 4430
+#define END 4580
 char *fname = "win_num.csv";
 
 int main(void)
@@ -11,8 +11,7 @@ int main(void)
   char buf[128];
   char num[128];
   char date[128];
-  int n3_max[3][2], n4_max[4][2]; // times num
-  int n3_min[3][2], n4_min[4][2]; // times num
+  int n3_max[3][2], n4_max[4][2];
   int n3[3], n4[4], ct_n3[3][10], ct_n4[4][10]; // grade num
   FILE *fp;
 
@@ -105,18 +104,6 @@ int main(void)
   printf("the one's     place:%4d %4d %4d %4d %4d %4d %4d %4d %4d %4d\n"
 	 ,ct_n3[2][0], ct_n3[2][1], ct_n3[2][2], ct_n3[2][3], ct_n3[2][4]
 	 ,ct_n3[2][5], ct_n3[2][6], ct_n3[2][7], ct_n3[2][8], ct_n3[2][9]);
-
-
-  int tmp[10];
-  for (j=0; j<10; j++) {
-    tmp[j] = 0;
-  }
-
-  for (i=0; i<3; i++) {
-    for (j=0; j<10; j++) {
-      tmp[j] += ct_n3[i][j];
-    }
-  }
 
   // calc mode number
   for (i=0; i<3; i++) {
