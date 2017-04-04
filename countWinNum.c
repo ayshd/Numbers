@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define START 0
-#define END 4580
+#define START 4476
+#define END   4626
 char *fname = "win_num.csv";
 
-int main(void)
+int main(int argc, char *argv[])
 {
   int i, j;
   char buf[128];
@@ -14,6 +14,12 @@ int main(void)
   int n3_max[3][2], n4_max[4][2];
   int n3[3], n4[4], ct_n3[3][10], ct_n4[4][10]; // grade num
   FILE *fp;
+
+  if (argc > 1) {
+    if (strcmp(argv[1], "-r") == 0) {
+      system("python getWinnum.py");
+    }
+  }
 
   if ((fp = fopen(fname, "r")) == NULL) {
     fprintf(stderr, "cannnot file open: %s\n", fname);
